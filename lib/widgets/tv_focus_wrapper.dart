@@ -8,6 +8,11 @@ class TvFocusWrapper extends StatefulWidget {
   final BorderRadius? borderRadius;
   final ValueChanged<bool>? onFocusChange;
 
+  /// Optional externally-owned focus node. When provided, this wrapper uses it
+  /// instead of creating its own, so ancestors (e.g. the floating header) can
+  /// address the node directly. The caller owns disposal.
+  final FocusNode? focusNode;
+
   const TvFocusWrapper({
     super.key,
     required this.child,
@@ -15,6 +20,7 @@ class TvFocusWrapper extends StatefulWidget {
     this.autofocus = false,
     this.borderRadius,
     this.onFocusChange,
+    this.focusNode,
   });
 
   @override
@@ -23,19 +29,23 @@ class TvFocusWrapper extends StatefulWidget {
 
 class _TvFocusWrapperState extends State<TvFocusWrapper> {
   bool _isFocused = false;
-  late FocusNode _focusNode;
+  late final FocusNode _focusNode;
+  late final bool _ownsFocusNode;
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode(debugLabel: 'TvFocusWrapper');
+    _ownsFocusNode = widget.focusNode == null;
+    _focusNode = widget.focusNode ?? FocusNode(debugLabel: 'TvFocusWrapper');
     _focusNode.addListener(_onFocusChange);
   }
 
   @override
   void dispose() {
     _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
+    if (_ownsFocusNode) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 

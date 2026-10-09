@@ -50,7 +50,9 @@ class ApiService {
   }) async {
     if (!ApiConfig.hasTmdbKey) {
       throw StateError(
-        'TMDB_API_KEY is not set. Build with --dart-define-from-file=env.json',
+        'TMDB_API_KEY is not set. Add it to env.json '
+        '(copy env.json.example) or build with '
+        '--dart-define-from-file=env.json',
       );
     }
 

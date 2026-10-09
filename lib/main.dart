@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:streamflix_tv/app.dart';
+import 'package:streamflix_tv/config/api_config.dart';
 import 'package:streamflix_tv/providers/media_provider.dart';
 import 'package:streamflix_tv/providers/search_provider.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Load the bundled gitignored env.json (TMDB key) before any API call.
+  await ApiConfig.load();
   const platform = MethodChannel('com.streamflix.streamflix_tv/launch');
   platform.setMethodCallHandler((call) async {
     if (call.method == 'resetToHome') {

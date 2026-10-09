@@ -2,6 +2,29 @@
 
 A new Flutter project.
 
+## Configuration (env.json)
+
+The TMDB key lives in `env.json`, which is gitignored (only `env.json.example`
+is tracked). It is bundled as an asset and loaded at startup in
+`ApiConfig.load()`, so no `--dart-define` flag is needed:
+
+```powershell
+Copy-Item env.json.example env.json   # then fill in the real key
+flutter run
+```
+
+If you *do* pass `--dart-define-from-file=env.json`, that value wins over the
+bundled asset.
+
+## Android TV
+
+The manifest ships with a `LEANBACK_LAUNCHER` intent-filter, a TV banner and
+`touchscreen required=false`, so it installs on Android TV devices as-is:
+
+```powershell
+flutter run --release -d <tv-device-id>
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

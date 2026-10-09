@@ -345,7 +345,18 @@ class _HeroBannerState extends State<HeroBanner> {
                         Row(
                           children: [
                             TvFocusWrapper(
-                              onTap: () => widget.onItemTap(item),
+                              // Browse-only build: the Play pill gives feedback
+                              // instead of starting playback. Matches the
+                              // message on the detail screen's Play button.
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Playback is not available yet.',
+                                    ),
+                                  ),
+                                );
+                              },
                               autofocus: index == 0,
                               onFocusChange: _onActionFocusChanged,
                               borderRadius: BorderRadius.circular(30),

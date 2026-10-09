@@ -19,9 +19,6 @@ dependencies:
   # Image caching
   cached_network_image: ^3.4.1
 
-  # Native WebView access from Android code
-  webview_flutter_android: ^4.14.1
-
   # Tizen platform support
   path_provider_tizen: ^2.1.0
 
@@ -38,3 +35,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # Gitignored build config (TMDB key). Copy env.json.example to env.json
+  # before building, otherwise the build fails on the missing asset.
+  assets:
+    - env.json

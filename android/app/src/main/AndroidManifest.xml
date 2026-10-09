@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Internet permission for API calls and WebView -->
+    <!-- Internet permission for TMDB API calls -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- TV launcher support -->
@@ -11,8 +11,7 @@
         android:label="Cineko"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:banner="@drawable/tv_banner"
-        android:usesCleartextTraffic="true">
+        android:banner="@drawable/tv_banner">
         <activity
             android:name=".MainActivity"
             android:exported="true"
