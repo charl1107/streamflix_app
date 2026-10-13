@@ -53,16 +53,35 @@ class _AppNavigationState extends State<AppNavigation> {
   /// geometrically no longer "above", so the default traversal stops and UP
   /// goes dead.
   ///
-  /// This handler only takes over in exactly that case; every other key press
-  /// is returned to the framework untouched.
+  /// The same applies horizontally: left/right from a header node is clamped
+  /// to the header itself, because the default traversal otherwise steps onto
+  /// content widgets — including ones scrolled off the top of the screen.
+  ///
+  /// Every other key press is returned to the framework untouched.
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
     }
+    final primary = FocusManager.instance.primaryFocus;
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowRight ||
+        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      final index = primary == null ? -1 : _headerFocusNodes.indexOf(primary);
+      if (index == -1) {
+        return KeyEventResult.ignored;
+      }
+      final next =
+          index + (event.logicalKey == LogicalKeyboardKey.arrowRight ? 1 : -1);
+      if (next < 0 || next >= _headerFocusNodes.length) {
+        return KeyEventResult.handled; // clamp at the ends, never escape
+      }
+      _headerFocusNodes[next].requestFocus();
+      return KeyEventResult.handled;
+    }
+
     if (event.logicalKey != LogicalKeyboardKey.arrowUp) {
       return KeyEventResult.ignored;
     }
-    final primary = FocusManager.instance.primaryFocus;
     if (primary == null || primary.context == null || _isHeaderNode(primary)) {
       return KeyEventResult.ignored;
     }
@@ -258,6 +277,12 @@ class _AppNavigationState extends State<AppNavigation> {
                             padding: const EdgeInsets.only(right: 14.0),
                             child: TvFocusWrapper(
                               focusNode: _headerFocusNodes[index + 1],
+                              // A selected pill is already brand red, so the
+                              // default red ring would be invisible on it and
+                              // "focused" could not be told from "selected".
+                              focusColor: isSelected
+                                  ? Colors.white
+                                  : const Color(0xFFE50914),
                               onTap: () {
                                 setState(() {
                                   _selectedIndex = index;

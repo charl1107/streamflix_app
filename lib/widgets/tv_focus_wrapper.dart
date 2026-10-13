@@ -13,6 +13,13 @@ class TvFocusWrapper extends StatefulWidget {
   /// address the node directly. The caller owns disposal.
   final FocusNode? focusNode;
 
+  /// Colour of the focus ring (border + glow).
+  ///
+  /// Defaults to the brand red. Pass a contrasting colour when the child's own
+  /// fill already uses that red — otherwise "focused" and "selected" paint the
+  /// same colour on top of each other and become unreadable.
+  final Color focusColor;
+
   const TvFocusWrapper({
     super.key,
     required this.child,
@@ -21,6 +28,7 @@ class TvFocusWrapper extends StatefulWidget {
     this.borderRadius,
     this.onFocusChange,
     this.focusNode,
+    this.focusColor = const Color(0xFFE50914),
   });
 
   @override
@@ -98,16 +106,14 @@ class _TvFocusWrapperState extends State<TvFocusWrapper> {
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
               border: Border.all(
-                color: _isFocused
-                    ? const Color(0xFFE50914)
-                    : Colors.transparent,
+                color: _isFocused ? widget.focusColor : Colors.transparent,
                 width: 2.2,
               ),
               borderRadius: effectiveRadius,
               boxShadow: _isFocused
                   ? [
                       BoxShadow(
-                        color: const Color(0xFFE50914).withValues(alpha: 0.55),
+                        color: widget.focusColor.withValues(alpha: 0.55),
                         blurRadius: 16,
                         spreadRadius: 3,
                       ),
